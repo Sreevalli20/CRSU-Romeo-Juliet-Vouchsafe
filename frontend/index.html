@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vouchsafe - Consent-First Decision Support</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1>Vouchsafe</h1>
+                <span class="tagline">Consent-First Decision Support</span>
+            </div>
+            <div class="nav-links">
+                <a href="#overview" class="nav-link active">Overview</a>
+                <a href="#decision-lab" class="nav-link">Decision Lab</a>
+                <a href="#benchmarks" class="nav-link">Benchmarks</a>
+                <a href="#research" class="nav-link">Research</a>
+                <a href="#ethics" class="nav-link">Ethics</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <!-- Executive Overview -->
+        <section id="overview" class="section active">
+            <div class="section-header">
+                <h2>Executive Overview</h2>
+                <p class="section-subtitle">Policy performance across all evaluation scenarios</p>
+            </div>
+
+            <div class="metrics-grid">
+                <div class="metric-card primary">
+                    <div class="metric-label">Primary Score</div>
+                    <div class="metric-value">0.417</div>
+                    <div class="metric-sub">MSMI per 100 members</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Coverage</div>
+                    <div class="metric-value">37.0%</div>
+                    <div class="metric-sub">Members served</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Mutual Acceptances</div>
+                    <div class="metric-value">4.86</div>
+                    <div class="metric-sub">Per 100 members</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Valid Episodes</div>
+                    <div class="metric-value">18/18</div>
+                    <div class="metric-sub">100% validity</div>
+                </div>
+            </div>
+
+            <div class="comparison-table-container">
+                <h3>Baseline Comparison</h3>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Policy</th>
+                            <th>MSMI/100</th>
+                            <th>Coverage</th>
+                            <th>Ask Cost</th>
+                            <th>Valid Episodes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="highlight">
+                            <td><strong>Vouchsafe Custom</strong></td>
+                            <td><strong>0.417</strong></td>
+                            <td>37.0%</td>
+                            <td>684</td>
+                            <td>18/18 ✓</td>
+                        </tr>
+                        <tr>
+                            <td>Greedy Baseline</td>
+                            <td>0.500</td>
+                            <td>43.0%</td>
+                            <td>200</td>
+                            <td>17/18 ⚠</td>
+                        </tr>
+                        <tr>
+                            <td>Random Baseline</td>
+                            <td>0.278</td>
+                            <td>37.7%</td>
+                            <td>207</td>
+                            <td>18/18 ✓</td>
+                        </tr>
+                        <tr>
+                            <td>No Asks Baseline</td>
+                            <td>0.139</td>
+                            <td>14.3%</td>
+                            <td>0</td>
+                            <td>18/18 ✓</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="variant-performance">
+                <h3>Scenario Robustness</h3>
+                <div class="variant-bars">
+                    <div class="variant-bar">
+                        <div class="variant-label">Cold Start</div>
+                        <div class="bar-container">
+                            <div class="bar-fill" style="width: 66.7%"></div>
+                            <span class="bar-value">0.667</span>
+                        </div>
+                    </div>
+                    <div class="variant-bar">
+                        <div class="variant-label">Development</div>
+                        <div class="bar-container">
+                            <div class="bar-fill" style="width: 50%"></div>
+                            <span class="bar-value">0.500</span>
+                        </div>
+                    </div>
+                    <div class="variant-bar">
+                        <div class="variant-label">Delayed</div>
+                        <div class="bar-container">
+                            <div class="bar-fill" style="width: 50%"></div>
+                            <span class="bar-value">0.500</span>
+                        </div>
+                    </div>
+                    <div class="variant-bar">
+                        <div class="variant-label">Shift</div>
+                        <div class="bar-container">
+                            <div class="bar-fill" style="width: 50%"></div>
+                            <span class="bar-value">0.500</span>
+                        </div>
+                    </div>
+                    <div class="variant-bar">
+                        <div class="variant-label">Drift</div>
+                        <div class="bar-container">
+                            <div class="bar-fill" style="width: 33.3%"></div>
+                            <span class="bar-value">0.333</span>
+                        </div>
+                    </div>
+                    <div class="variant-bar">
+                        <div class="variant-label">Sparse</div>
+                        <div class="bar-container">
+                            <div class="bar-fill warning" style="width: 0%"></div>
+                            <span class="bar-value">0.000</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Decision Lab -->
+        <section id="decision-lab" class="section">
+            <div class="section-header">
+                <h2>Live Decision Lab</h2>
+                <p class="section-subtitle">Real-time policy decision visualization</p>
+            </div>
+
+            <div class="decision-flow">
+                <div class="flow-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Input State</h3>
+                        <div class="state-box">
+                            <div class="state-row">
+                                <span class="state-label">Day:</span>
+                                <span class="state-value" id="current-day">15</span>
+                            </div>
+                            <div class="state-row">
+                                <span class="state-label">Available Members:</span>
+                                <span class="state-value" id="available-members">47</span>
+                            </div>
+                            <div class="state-row">
+                                <span class="state-label">Ask Budget:</span>
+                                <span class="state-value" id="ask-budget">12</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flow-arrow">→</div>
+
+                <div class="flow-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Constraint Gate</h3>
+                        <div class="constraint-results">
+                            <div class="constraint-item success">
+                                <span class="constraint-label">Age Range</span>
+                                <span class="constraint-status">✓ Feasible</span>
+                            </div>
+                            <div class="constraint-item success">
+                                <span class="constraint-label">Gender Preference</span>
+                                <span class="constraint-status">✓ Feasible</span>
+                            </div>
+                            <div class="constraint-item warning">
+                                <span class="constraint-label">Geography</span>
+                                <span class="constraint-status">◐ Needs Clarification</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flow-arrow">→</div>
+
+                <div class="flow-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Scoring</h3>
+                        <div class="score-breakdown">
+                            <div class="score-row">
+                                <span class="score-label">Feasibility</span>
+                                <div class="score-bar">
+                                    <div class="score-fill" style="width: 100%"></div>
+                                </div>
+                                <span class="score-value">1.00</span>
+                            </div>
+                            <div class="score-row">
+                                <span class="score-label">Compatibility</span>
+                                <div class="score-bar">
+                                    <div class="score-fill" style="width: 71%"></div>
+                                </div>
+                                <span class="score-value">0.71</span>
+                            </div>
+                            <div class="score-row">
+                                <span class="score-label">Evidence</span>
+                                <div class="score-bar">
+                                    <div class="score-fill" style="width: 85%"></div>
+                                </div>
+                                <span class="score-value">0.85</span>
+                            </div>
+                            <div class="score-row">
+                                <span class="score-label">Uncertainty Penalty</span>
+                                <div class="score-bar">
+                                    <div class="score-fill negative" style="width: 30%"></div>
+                                </div>
+                                <span class="score-value">-0.30</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flow-arrow">→</div>
+
+                <div class="flow-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Decision</h3>
+                        <div class="decision-result">
+                            <div class="decision-status">INTRODUCE</div>
+                            <div class="decision-pair">
+                                <span class="member-id">syn_a3f2...</span>
+                                <span class="connector">↔</span>
+                                <span class="member-id">syn_b8c1...</span>
+                            </div>
+                            <div class="decision-reason">
+                                High compatibility (0.71), strong evidence (0.85), acceptable uncertainty
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="action-button" onclick="runDemoDecision()">Run Demo Decision</button>
+        </section>
+
+        <!-- Benchmarks -->
+        <section id="benchmarks" class="section">
+            <div class="section-header">
+                <h2>Benchmark Center</h2>
+                <p class="section-subtitle">Official evaluator results across all policies</p>
+            </div>
+
+            <div class="benchmark-chart">
+                <h3>MSMI Performance by Policy</h3>
+                <div class="chart-container">
+                    <div class="chart-bar-group">
+                        <div class="chart-bar" style="height: 50%">
+                            <span class="chart-label">Greedy</span>
+                            <span class="chart-value">0.50</span>
+                        </div>
+                        <div class="chart-bar highlight" style="height: 41.7%">
+                            <span class="chart-label">Vouchsafe</span>
+                            <span class="chart-value">0.42</span>
+                        </div>
+                        <div class="chart-bar" style="height: 27.8%">
+                            <span class="chart-label">Random</span>
+                            <span class="chart-value">0.28</span>
+                        </div>
+                        <div class="chart-bar" style="height: 13.9%">
+                            <span class="chart-label">No Asks</span>
+                            <span class="chart-value">0.14</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="robustness-matrix">
+                <h3>Robustness Matrix</h3>
+                <table class="matrix-table">
+                    <thead>
+                        <tr>
+                            <th>Variant</th>
+                            <th>Vouchsafe</th>
+                            <th>Greedy</th>
+                            <th>Random</th>
+                            <th>No Asks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Cold Start</td>
+                            <td class="good">0.667</td>
+                            <td class="good">0.500</td>
+                            <td class="neutral">0.167</td>
+                            <td class="bad">0.000</td>
+                        </tr>
+                        <tr>
+                            <td>Development</td>
+                            <td class="good">0.500</td>
+                            <td class="good">0.500</td>
+                            <td class="good">0.333</td>
+                            <td class="neutral">0.167</td>
+                        </tr>
+                        <tr>
+                            <td>Delayed</td>
+                            <td class="good">0.500</td>
+                            <td class="good">1.000</td>
+                            <td class="neutral">0.167</td>
+                            <td class="neutral">0.333</td>
+                        </tr>
+                        <tr>
+                            <td>Shift</td>
+                            <td class="good">0.500</td>
+                            <td class="good">0.500</td>
+                            <td class="good">0.500</td>
+                            <td class="neutral">0.167</td>
+                        </tr>
+                        <tr>
+                            <td>Drift</td>
+                            <td class="neutral">0.333</td>
+                            <td class="good">0.500</td>
+                            <td class="good">0.333</td>
+                            <td class="neutral">0.167</td>
+                        </tr>
+                        <tr>
+                            <td>Sparse</td>
+                            <td class="bad">0.000</td>
+                            <td class="neutral">0.167</td>
+                            <td class="neutral">0.167</td>
+                            <td class="bad">0.000</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Research -->
+        <section id="research" class="section">
+            <div class="section-header">
+                <h2>Research & Methodology</h2>
+                <p class="section-subtitle">Policy architecture and experimental design</p>
+            </div>
+
+            <div class="research-content">
+                <div class="research-block">
+                    <h3>Policy Architecture</h3>
+                    <div class="architecture-diagram">
+                        <div class="arch-node">Observable State</div>
+                        <div class="arch-arrow">↓</div>
+                        <div class="arch-node">Constraint Gate</div>
+                        <div class="arch-arrow">↓</div>
+                        <div class="arch-node">Feasible Candidates</div>
+                        <div class="arch-arrow">↓</div>
+                        <div class="arch-node">Compatibility + Evidence</div>
+                        <div class="arch-arrow">↓</div>
+                        <div class="arch-node">Uncertainty Model</div>
+                        <div class="arch-arrow">↓</div>
+                        <div class="arch-node">Value of Information</div>
+                        <div class="arch-arrow">↓</div>
+                        <div class="arch-node">Clarification Decision</div>
+                        <div class="arch-arrow">↓</div>
+                        <div class="arch-node">Sequential Ranking</div>
+                        <div class="arch-arrow">↓</div>
+                        <div class="arch-node">Introduction</div>
+                        <div class="arch-arrow">↓</div>
+                        <div class="arch-node">Delayed Feedback</div>
+                        <div class="arch-arrow">↓</div>
+                        <div class="arch-node">Online Update</div>
+                    </div>
+                </div>
+
+                <div class="research-block">
+                    <h3>Key Innovations</h3>
+                    <ul class="innovation-list">
+                        <li>
+                            <strong>Constraint-First Design:</strong> Hard constraints are checked before any scoring.
+                            No compatibility score can override consent or explicit constraints.
+                        </li>
+                        <li>
+                            <strong>Uncertainty-Aware Scoring:</strong> Missing information is treated as uncertainty,
+                            not as compatibility or incompatibility. Uncertainty is explicitly penalized.
+                        </li>
+                        <li>
+                            <strong>Value-of-Information Clarification:</strong> Questions are asked only when expected
+                            information gain exceeds a threshold, not merely because data is missing.
+                        </li>
+                        <li>
+                            <strong>Delayed Feedback Learning:</strong> The policy updates its understanding based on
+                            feedback that arrives after decisions, preserving temporal correctness.
+                        </li>
+                        <li>
+                            <strong>Global Allocation:</strong> Pairs are selected to maximize total value across
+                            the pool, not just individual pair ranking.
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="research-block">
+                    <h3>Experimental Setup</h3>
+                    <div class="experiment-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Seeds:</span>
+                            <span class="detail-value">101, 102, 103</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Variants:</span>
+                            <span class="detail-value">development, sparse, cold_start, delayed, shift, drift</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Episodes per Variant:</span>
+                            <span class="detail-value">3</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Total Episodes:</span>
+                            <span class="detail-value">18</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Members per Episode:</span>
+                            <span class="detail-value">200</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Decision Days:</span>
+                            <span class="detail-value">60</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Follow-up Days:</span>
+                            <span class="detail-value">40</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="research-block">
+                    <h3>Limitations</h3>
+                    <ul class="limitation-list">
+                        <li>Higher ask cost (684 vs 200 for greedy) due to conservative clarification</li>
+                        <li>Sparse variant performance is weak (0.0 MSMI) - geographic fragmentation challenging</li>
+                        <li>Learning component is simple - could benefit from more sophisticated bandit methods</li>
+                        <li>Value-of-information threshold is heuristic - not tuned on validation data</li>
+                        <li>Results are on synthetic data only - not evidence of real-world performance</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ethics -->
+        <section id="ethics" class="section">
+            <div class="section-header">
+                <h2>Ethics & Safety</h2>
+                <p class="section-subtitle">Consent-first design principles</p>
+            </div>
+
+            <div class="ethics-content">
+                <div class="ethics-card">
+                    <div class="ethics-icon">🔒</div>
+                    <h3>Consent-First</h3>
+                    <p>Hard constraints are never overridden. Age, gender, relationship structure, smoking, children,
+                    and geographic preferences are strictly enforced. No score can compensate for a constraint violation.</p>
+                </div>
+
+                <div class="ethics-card">
+                    <div class="ethics-icon">👤</div>
+                    <h3>Human Authority</h3>
+                    <p>The policy provides decision support, not decisions. A human operator must approve any real-world
+                    introduction. The system does not contact people directly or make commitments.</p>
+                </div>
+
+                <div class="ethics-card">
+                    <div class="ethics-icon">❓</div>
+                    <h3>Uncertainty Transparency</h3>
+                    <p>Missing information is explicitly acknowledged. The policy distinguishes between unknown,
+                    declined, and observed. Uncertainty is visible in scoring and explanation.</p>
+                </div>
+
+                <div class="ethics-card">
+                    <div class="ethics-icon">🎯</div>
+                    <h3>Data Minimization</h3>
+                    <p>Only information necessary for decision-making is requested. Clarification is selective based on
+                    expected value, not blanket data collection.</p>
+                </div>
+
+                <div class="ethics-card">
+                    <div class="ethics-icon">🧪</div>
+                    <h3>Synthetic Only</h3>
+                    <p>All profiles, conversations, and outcomes in this evaluation are synthetic. Results apply only
+                    to the simulator, not to real relationship prediction or actual Vouchsafe members.</p>
+                </div>
+
+                <div class="ethics-card">
+                    <div class="ethics-icon">📊</div>
+                    <h3>Monitoring</h3>
+                    <p>The policy tracks constraint violations, clarification costs, coverage, and outcome disparities.
+                    Failures and uneven outcomes are logged for review.</p>
+                </div>
+            </div>
+
+            <div class="assumptions-note">
+                <h3>Assumptions Requiring Validation</h3>
+                <p>Before any real-world use, the following simulator assumptions would need validation:</p>
+                <ul>
+                    <li>Preference stability over time</li>
+                    <li>Accuracy of self-reported constraints</li>
+                    <li>Representativeness of synthetic preference distributions</li>
+                    <li>Feedback latency patterns in real introduction workflows</li>
+                    <li>Acceptability of clarification frequency in practice</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <p>CRSU × Romeo & Juliet Hackathon 2026 | Vouchsafe Challenge</p>
+            <p class="footer-note">All results are on synthetic data. Not evidence of real-world performance.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>

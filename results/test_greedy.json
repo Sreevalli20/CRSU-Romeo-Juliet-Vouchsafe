@@ -1,0 +1,20 @@
+{
+  "release": "1.0.0",
+  "mode": "trusted_local",
+  "decision_days": 60,
+  "follow_up_days": 40,
+  "members_per_episode": 200,
+  "episodes": [
+    {
+      "valid": false,
+      "error": "Request exceeds 1 MiB",
+      "seed": 101,
+      "variant": "development"
+    }
+  ],
+  "summary": {
+    "eligible": false,
+    "primary_score": null,
+    "reason": "At least one episode is invalid"
+  }
+}

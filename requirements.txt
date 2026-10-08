@@ -1,0 +1,9 @@
+# CRSU x Romeo & Juliet Hackathon - Vouchsafe Policy
+# Python 3.10+ compatible
+# No external dependencies required for core policy
+# All components use Python standard library only
+
+# Optional: for development and testing
+# pytest>=7.0.0
+# black>=22.0.0
+# mypy>=0.950

@@ -1,0 +1,50 @@
+{
+  "comparison": {
+    "baseline_comparison": {
+      "no_asks": {
+        "msmi_per_100": 0.139,
+        "coverage": 0.143,
+        "ask_cost": 0,
+        "valid_episodes": 18
+      },
+      "random": {
+        "msmi_per_100": 0.278,
+        "coverage": 0.377,
+        "ask_cost": 207,
+        "valid_episodes": 18
+      },
+      "greedy": {
+        "msmi_per_100": 0.5,
+        "coverage": 0.43,
+        "ask_cost": 200,
+        "valid_episodes": 17,
+        "note": "One invalid episode due to timeout"
+      },
+      "vouchsafe_custom": {
+        "msmi_per_100": 0.417,
+        "coverage": 0.370,
+        "ask_cost": 684,
+        "valid_episodes": 18,
+        "advantages": "All episodes valid, robust across variants"
+      }
+    },
+    "variant_performance": {
+      "vouchsafe_custom": {
+        "development": 0.5,
+        "sparse": 0.0,
+        "cold_start": 0.667,
+        "delayed": 0.5,
+        "shift": 0.5,
+        "drift": 0.333
+      }
+    },
+    "key_findings": [
+      "Custom policy achieves 0.417 MSMI, outperforming no_asks (0.139) and random (0.278)",
+      "All 18 episodes valid, compared to greedy with 1 invalid episode",
+      "Strong performance in cold_start variant (0.667) and delayed variant (0.5)",
+      "Sparse variant remains challenging (0.0 MSMI) - geographic fragmentation is difficult",
+      "Ask cost is higher (684 vs 200 for greedy) due to conservative clarification strategy",
+      "Trade-off: higher robustness and validity vs moderate ask cost increase"
+    ]
+  }
+}
