@@ -8,40 +8,35 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 from src.policy_engine import PolicyEngine
 
-# Global engine instance (recreated per episode by design)
-_engine = None
-
 
 def decide(request):
     """Main decision function for official JSON interface."""
-    global _engine
-
     # Initialize or retrieve engine from memory
     memory = request.get('memory') or {}
     if not memory.get('engine_initialized'):
         # Extract seed from context if available, otherwise use default
         seed = memory.get('seed', 42)
-        _engine = PolicyEngine(seed=seed)
-        memory = _engine.initialize_memory()
+        engine = PolicyEngine(seed=seed)
+        memory = engine.initialize_memory()
         memory['engine_initialized'] = True
+        memory['seed'] = seed
     else:
-        # Reconstruct engine from memory state if needed
-        # For now, we keep it simple and reinitialize with stored seed
+        # Reconstruct engine from memory
         seed = memory.get('seed', 42)
-        _engine = PolicyEngine(seed=seed)
+        engine = PolicyEngine(seed=seed)
 
     state = request['state']
     phase = request['phase']
 
     # Update memory with any new feedback
     if state.get('feedback'):
-        memory = _engine.update_memory(memory, state['feedback'])
+        memory = engine.update_memory(memory, state['feedback'])
 
     if phase == 'ask':
-        asks, memory = _engine.decide_asks(state, memory)
+        asks, memory = engine.decide_asks(state, memory)
         return {'asks': asks, 'memory': memory}
     elif phase == 'match':
-        pairs, memory = _engine.decide_pairs(state, memory)
+        pairs, memory = engine.decide_pairs(state, memory)
         return {'pairs': pairs, 'memory': memory}
     else:
         raise ValueError(f"Unknown phase: {phase}")

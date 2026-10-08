@@ -20,31 +20,45 @@
         "valid_episodes": 17,
         "note": "One invalid episode due to timeout"
       },
-      "vouchsafe_custom": {
-        "msmi_per_100": 0.417,
-        "coverage": 0.370,
-        "ask_cost": 684,
+      "vouchsafe_v6": {
+        "msmi_per_100": 0.472,
+        "coverage": 0.371,
+        "ask_cost": 207,
         "valid_episodes": 18,
-        "advantages": "All episodes valid, robust across variants"
+        "advantages": "All episodes valid, improved sparse performance, lower ask cost than V1"
       }
     },
     "variant_performance": {
-      "vouchsafe_custom": {
-        "development": 0.5,
-        "sparse": 0.0,
-        "cold_start": 0.667,
-        "delayed": 0.5,
-        "shift": 0.5,
-        "drift": 0.333
+      "vouchsafe_v6": {
+        "development": 0.833,
+        "sparse": 0.167,
+        "cold_start": 0.333,
+        "delayed": 0.167,
+        "shift": 0.667,
+        "drift": 0.667
       }
     },
     "key_findings": [
-      "Custom policy achieves 0.417 MSMI, outperforming no_asks (0.139) and random (0.278)",
+      "V6 policy achieves 0.472 MSMI, close to greedy baseline (0.500)",
       "All 18 episodes valid, compared to greedy with 1 invalid episode",
-      "Strong performance in cold_start variant (0.667) and delayed variant (0.5)",
-      "Sparse variant remains challenging (0.0 MSMI) - geographic fragmentation is difficult",
-      "Ask cost is higher (684 vs 200 for greedy) due to conservative clarification strategy",
-      "Trade-off: higher robustness and validity vs moderate ask cost increase"
-    ]
+      "Strong performance in development variant (0.833) and shift/drift (0.667)",
+      "Sparse variant improved from 0.0 to 0.167 (geographic fragmentation still challenging)",
+      "Ask cost reduced to 207 (from 684 in V1) by eliminating soft field asking",
+      "Trade-off: slightly below greedy MSMI but with better validity and robustness"
+    ],
+    "optimization_history": {
+      "v1": {
+        "msmi_per_100": 0.417,
+        "ask_cost": 684,
+        "sparse": 0.0,
+        "issues": "High ask cost, sparse failure, uncertainty penalty too aggressive"
+      },
+      "v6": {
+        "msmi_per_100": 0.472,
+        "ask_cost": 207,
+        "sparse": 0.167,
+        "improvements": "Removed uncertainty penalty, only ask hard constraints, added relationship_goal priority"
+      }
+    }
   }
 }
