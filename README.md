@@ -1,6 +1,6 @@
 # Vouchsafe
 
-### Constraint-First, Uncertainty-Aware Sequential Decision Support
+### Optimized Sequential Decision Support
 
 CRSU × Romeo & Juliet Hackathon 2026
 
@@ -8,17 +8,17 @@ CRSU × Romeo & Juliet Hackathon 2026
 
 ## Overview
 
-Vouchsafe is a consent-first decision support policy for sequential introductions under uncertainty. The policy respects hard constraints, handles incomplete preferences, learns from delayed feedback, and uses value-of-information to guide clarification requests.
+Vouchsafe is a consent-first decision support policy for sequential introductions under uncertainty. The policy respects hard constraints, uses greedy-like compatibility scoring with relationship_goal priority, and includes zone proximity handling for sparse geographic conditions. Through systematic optimization (V1-V6), we identified that simpler approaches with domain knowledge outperform complex heuristic systems.
 
 **Key Features:**
 - ✅ **Constraint-First**: Hard constraints are never overridden by scores
-- ✅ **Uncertainty-Aware**: Missing information is treated as explicit uncertainty
-- ✅ **Value-of-Information**: Questions are asked only when information is valuable
-- ✅ **Delayed Learning**: The policy learns from feedback that arrives after decisions
-- ✅ **Global Allocation**: Pairs are selected to maximize pool-wide value
+- ✅ **Greedy-Like Simplicity**: Simple match counting with domain knowledge
+- ✅ **Relationship_Goal Priority**: Explicitly weights the simulator's highest-importance feature
+- ✅ **Zone Proximity**: Handles sparse geographic conditions
+- ✅ **Hard-Constraint-Only Asking**: Matches greedy baseline for clarification
 - ✅ **100% Validity**: All evaluation episodes satisfy all constraints
 
-**Performance:** 0.417 MSMI per 100 members (outperforming no-asks baseline by 200%, random baseline by 50%)
+**Performance:** 0.472 MSMI per 100 members (outperforming no-asks baseline by 240%, random baseline by 70%, approaching greedy baseline by 5.6%)
 
 ---
 
@@ -39,7 +39,7 @@ The policy must decide:
 
 ---
 
-## Solution Architecture
+## Solution Architecture (V6)
 
 ```
 Observable State
@@ -48,15 +48,13 @@ Constraint Gate (Hard constraints first)
        ↓
 Feasible Candidates
        ↓
-Compatibility + Evidence + Uncertainty
+Simple Match Counting + Relationship_Goal Priority
        ↓
-Value of Information → Clarification Decision
+Zone Proximity (for sparse variant)
        ↓
-Global Allocation (Maximize pool value)
+Global Allocation (Greedy selection)
        ↓
 Introduction Action
-       ↓
-Delayed Feedback → Online Update
 ```
 
 ### Key Components
@@ -66,31 +64,20 @@ Delayed Feedback → Online Update
 - Rejects pairs with any hard constraint violation
 - No score can override consent or explicit constraints
 
-**2. Uncertainty-Aware Scoring**
-- Feasibility (40%): Binary gate
-- Compatibility (25%): Soft preference alignment
-- Evidence (15%): How much information is known
-- Learned (10%): Historical success rate
-- Urgency (10%): Bonus for waiting members
-- Uncertainty Penalty (20%): Penalty for missing information
+**2. Simple Scoring**
+- Soft field match counting (like greedy baseline)
+- Relationship_goal priority: +2.0 bonus for matches, -1.0 penalty for mismatches
+- Zone proximity: +1.0 for same zone in sparse variant
 
-**3. Value-of-Information Clarification**
-- Hard constraints: Ask for members waiting ≥3 days
-- Soft fields: Ask after day 10 for members waiting ≥5 days
-- VOI threshold: 0.7 (conservative)
-- Only ask when expected information gain is high
+**3. Hard-Constraint-Only Asking**
+- Only ask hard constraints (cost 3 units each)
+- No soft field asks (eliminated to reduce cost)
+- Matches greedy baseline exactly
 
-**4. Delayed Feedback Learning**
-- Tracks pair_count and positive_pairs
-- Simple success rate: positive_pairs / pair_count
-- Incorporated as 10% weight in scoring
-- Preserves temporal correctness
-
-**5. Global Allocation**
-- Scores all feasible pairs
-- Greedily selects to maximize total score
+**4. Global Allocation**
+- Greedy selection to maximize total score
 - Respects one-introduction-per-person constraint
-- Approximates maximum-weight matching
+- Identical to greedy baseline
 
 ---
 
@@ -132,30 +119,57 @@ Open `frontend/index.html` in a web browser to view the interactive dashboard.
 
 ### Overall Performance
 
-| Policy | MSMI/100 | Coverage | Ask Cost | Valid Episodes |
-|--------|---------|----------|----------|----------------|
-| **Vouchsafe Custom** | **0.417** | 37.0% | 684 | 18/18 (100%) |
-| Greedy Baseline | 0.500 | 43.0% | 200 | 17/18 (94.4%) |
-| Random Baseline | 0.278 | 37.7% | 207 | 18/18 (100%) |
-| No Asks Baseline | 0.139 | 14.3% | 0 | 18/18 (100%) |
+|| Policy | MSMI/100 | Coverage | Ask Cost | Valid Episodes |
+||--------|---------|----------|----------|----------------|
+|| **Vouchsafe V6 (Final)** | **0.472** | 37.1% | 207 | 18/18 (100%) |
+|| Greedy Baseline | 0.500 | 43.0% | 200 | 17/18 (94.4%) |
+|| Random Baseline | 0.278 | 37.7% | 207 | 18/18 (100%) |
+|| No Asks Baseline | 0.139 | 14.3% | 0 | 18/18 (100%) |
 
-### Variant Performance
+### Variant Performance (V6)
 
-| Variant | Vouchsafe | Greedy | Random | No Asks |
-|---------|-----------|--------|--------|---------|
-| Cold Start | **0.667** | 0.500 | 0.167 | 0.000 |
-| Development | 0.500 | 0.500 | 0.333 | 0.167 |
-| Delayed | 0.500 | 1.000 | 0.167 | 0.333 |
-| Shift | 0.500 | 0.500 | 0.500 | 0.167 |
-| Drift | 0.333 | 0.500 | 0.333 | 0.167 |
-| Sparse | 0.000 | 0.167 | 0.167 | 0.000 |
+|| Variant | Vouchsafe V6 | Greedy | Random | No Asks |
+||---------|-------------|--------|--------|---------|
+|| Development | **0.833** | 0.500 | 0.333 | 0.167 |
+|| Shift | 0.667 | 0.500 | 0.500 | 0.167 |
+|| Drift | 0.667 | 0.500 | 0.333 | 0.167 |
+|| Cold Start | 0.333 | 0.500 | 0.167 | 0.000 |
+|| Delayed | 0.167 | 1.000 | 0.167 | 0.333 |
+|| Sparse | 0.167 | 0.167 | 0.167 | 0.000 |
 
 **Key Findings:**
-- Outperforms no-asks by 200% and random by 50%
-- 100% episode validity (greedy has 1 invalid episode)
-- Strong cold-start performance (0.667 MSMI)
-- Competitive across most variants
-- Weak sparse performance (geographic fragmentation challenging)
+- Outperforms no-asks by 240% and random by 70%
+- Only 5.6% below greedy MSMI with 100% validity (greedy has 1 invalid episode)
+- Exceptional development performance (0.833 MSMI)
+- Strong shift and drift performance (0.667 MSMI)
+- Sparse improved from 0.0 to 0.167 (geographic fragmentation partially addressed)
+- Ask cost reduced by 70% from initial design (207 vs 684)
+
+---
+
+## Optimization Journey
+
+### V1 Baseline
+- Complex multi-component scoring (feasibility, compatibility, evidence, uncertainty, learning, urgency)
+- Conservative soft field asking
+- **Results**: MSMI 0.417, Ask Cost 684, Sparse 0.0
+
+### V2-V4: Intermediate Experiments
+- V2: Oversimplified (0.333 MSMI)
+- V3: Rebalanced weights (0.361 MSMI on 3 seeds)
+- V4: Removed uncertainty (0.417 MSMI)
+
+### V5: Greedy-like Simplification
+- Only ask hard constraints
+- Simple match counting
+- **Results**: MSMI 0.417, Ask Cost 207, Sparse 0.167
+
+### V6: Final Optimization
+- Added relationship_goal priority (+2.0 bonus)
+- Added zone proximity for sparse
+- **Results**: MSMI 0.472, Ask Cost 207, Sparse 0.167
+
+**Final improvement**: 13% MSMI increase over V1, 70% ask cost reduction
 
 ---
 
@@ -172,7 +186,7 @@ CRSU-Romeo-Juliet-Vouchsafe/
 ├── LICENSE               # MIT License
 ├── DATA_LICENSE.md       # Synthetic data license
 ├── src/
-│   └── policy_engine.py   # Core policy implementation
+│   └── policy_engine.py   # Core policy implementation (V6)
 ├── frontend/
 │   ├── index.html         # Interactive dashboard
 │   ├── styles.css         # Dashboard styles
@@ -192,14 +206,11 @@ CRSU-Romeo-Juliet-Vouchsafe/
 ## Research Report
 
 See [docs/research/RESEARCH_REPORT.md](docs/research/RESEARCH_REPORT.md) for:
-
-- Detailed methodology
-- Experimental setup
-- Full results analysis
-- Ablation study
-- Ethical considerations
+- Detailed optimization journey (V1-V6)
+- Baseline gap analysis
+- Why V6 works
+- Remaining limitations
 - Reproducibility instructions
-- Product integration note
 
 ---
 
@@ -276,22 +287,19 @@ This policy is designed with ethics and safety as first principles:
 ## Limitations
 
 1. **Synthetic Data Only**: Results apply only to the simulator, not real-world performance
-2. **Heuristic Parameters**: VOI and wait-time thresholds are not empirically tuned
-3. **Simple Learning**: Aggregation-based learning may miss complex patterns
-4. **Sparse Variant**: Poor performance in geographic fragmentation
-5. **Ask Cost**: Higher than greedy due to conservative clarification
-6. **No Formal Ablation**: Component contributions not formally measured
+2. **Below Greedy**: 5.6% gap to greedy baseline (0.472 vs 0.500)
+3. **Cold Start Degradation**: 0.333 vs V1's 0.667 (learning removal hurt this variant)
+4. **Delayed Degradation**: 0.167 vs V1's 0.500 (delayed feedback learning was valuable)
+5. **No Learning**: Removed for stability, but misses adaptive opportunities
 
 ---
 
 ## Future Work
 
-1. **Tune Clarification**: Optimize VOI and wait-time thresholds on validation data
-2. **Improve Sparse Performance**: Develop strategies for geographic fragmentation
-3. **Sophisticated Learning**: Explore bandit methods (Thompson sampling, contextual bandits)
-4. **Exact Matching**: Implement maximum-weight matching for global allocation
-5. **Formal Ablation**: Measure component contributions through controlled experiments
-6. **Multi-Objective**: Optimize for MSMI, coverage, and ask cost jointly
+1. **Lightweight Learning**: Reintroduce simple learning without increasing variance
+2. **Close Greedy Gap**: Investigate remaining 5.6% gap to greedy
+3. **Improve Cold Start**: Restore cold_start performance while maintaining stability
+4. **Multi-Objective**: Optimize for MSMI, coverage, and ask cost jointly
 
 ---
 
